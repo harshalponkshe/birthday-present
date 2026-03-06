@@ -15,18 +15,19 @@ body{
     cursor:none;
 }
 
-/* gift icons with circular frames and magical aura */
+/* icon container aligned in a horizontal row on left side */
 .icon-container{
     position:fixed;
-    left:20px; /* left side of screen */
+    left:20px; /* distance from left edge */
     top:50%;
     transform:translateY(-50%);
     display:flex;
-    flex-direction:column; /* vertical column, change to row if needed */
-    gap:40px; /* space between icons */
+    flex-direction: row; /* horizontal row */
+    gap:30px; /* space between icons */
     z-index:10;
 }
 
+/* gift icons with circular frames and magical aura */
 .icon-wrapper{
     position:relative;
     width:130px;
@@ -40,7 +41,7 @@ body{
     border-radius:50%;       
     border:3px solid gold;   
     box-shadow: 0 0 15px rgba(255,215,0,0.6); 
-    background: rgba(0,0,0,0.3); /* semi-transparent inner background */
+    background: rgba(0,0,0,0.3); /* inner background */
     cursor:pointer;
     transition: transform 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease;
     overflow:hidden; 
@@ -253,3 +254,4 @@ function closeScenes(){
 
 </body>
 </html>
+
