@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Birthday Quest</title>
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:url("background.jpg") no-repeat center center fixed;
+background-size:100% 100%;
+font-family:serif;
+cursor:none;
+}
+
+/* gift icons */
+
+.icon{
+position:absolute;
+width:130px;
+cursor:pointer;
+transition:transform 0.25s ease, filter 0.25s ease;
+}
+
+.icon:hover{
+transform:scale(1.35);
+filter:drop-shadow(0 0 15px gold);
+}
+
+/* icon positions */
+
+#gift1{ bottom:120px; left:25%; }
+#gift2{ top:40%; left:48%; }
+#gift3{ bottom:120px; right:25%; }
+
+/* paimon cursor */
+
+#paimonCursor{
+position:fixed;
+width:80px;
+pointer-events:none;
+z-index:9999;
+animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-8px)}
+100%{transform:translateY(0)}
+}
+
+/* overlay scenes */
+
+.scene{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:none;
+justify-content:center;
+align-items:center;
+background:black;
+flex-direction:column;
+}
+
+/* fullscreen media */
+
+.full{
+width:100vw;
+height:100vh;
+object-fit:cover;
+}
+
+/* genshin dialogue */
+
+.dialogue{
+position:absolute;
+bottom:40px;
+background:rgba(20,30,60,0.9);
+border:3px solid gold;
+border-radius:12px;
+padding:20px;
+color:white;
+font-size:26px;
+text-align:center;
+box-shadow:0 0 15px gold;
+}
+
+button{
+margin-top:15px;
+padding:10px 25px;
+font-size:18px;
+border:none;
+border-radius:8px;
+background:gold;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- MAIN PAGE BACKGROUND MUSIC -->
+<audio id="bgMusic" loop>
+<!-- ADD MAIN PAGE MUSIC HERE -->
+<source src="main-music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PAIMON CURSOR -->
+<img id="paimonCursor" src="paimon.png">
+
+<!-- MAIN PAGE GIFTS -->
+
+<img src="gift1.webp" class="icon" id="gift1" onclick="openScene(1)">
+<img src="gift2.webp" class="icon" id="gift2" onclick="openScene(2)">
+<img src="gift3.webp" class="icon" id="gift3" onclick="openScene(3)">
+
+<!-- SCENE 1 -->
+
+<div class="scene" id="scene1">
+
+<img src="image1.png" class="full">
+
+<div class="dialogue">
+
+Tanjoubi Omedetou !!! 🎉
+
+<br>
+
+<button onclick="closeScenes()">Return</button>
+
+</div>
+
+</div>
+
+<!-- SCENE 2 -->
+
+<div class="scene" id="scene2">
+
+<img src="fatui.png" class="full">
+
+<audio id="music">
+
+<!-- ADD FATUI SOUNDTRACK HERE -->
+<source src="soundtrack.mp3" type="audio/mpeg">
+
+</audio>
+
+</div>
+
+<!-- SCENE 3 -->
+
+<div class="scene" id="scene3">
+
+<video id="video" class="full">
+
+<!-- ADD VIDEO HERE -->
+<source src="video.mp4" type="video/mp4">
+
+</video>
+
+</div>
+
+<script>
+
+/* START MAIN PAGE MUSIC AFTER FIRST CLICK */
+
+window.addEventListener("click",()=>{
+let music=document.getElementById("bgMusic")
+music.volume=0.5
+music.play()
+},{once:true})
+
+/* PAIMON FOLLOW CURSOR */
+
+document.addEventListener("mousemove",e=>{
+let p=document.getElementById("paimonCursor")
+p.style.left=e.clientX+"px"
+p.style.top=e.clientY+"px"
+})
+
+/* OPEN SCENES */
+
+function openScene(n){
+
+let bg=document.getElementById("bgMusic")
+bg.pause()
+
+document.querySelectorAll(".scene").forEach(s=>s.style.display="none")
+
+document.getElementById("scene"+n).style.display="flex"
+
+if(n===2){
+let m=document.getElementById("music")
+m.currentTime=0
+m.play()
+m.onended=closeScenes
+}
+
+if(n===3){
+let v=document.getElementById("video")
+v.currentTime=0
+v.play()
+v.onended=closeScenes
+}
+
+}
+
+/* RETURN TO MAIN PAGE */
+
+function closeScenes(){
+
+document.querySelectorAll(".scene").forEach(s=>s.style.display="none")
+
+let bg=document.getElementById("bgMusic")
+bg.play()
+
+}
+
+</script>
+
+</body>
+</html>
