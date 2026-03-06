@@ -15,27 +15,6 @@ body{
     cursor:none;
 }
 
-/* AUTOPLAY OVERLAY */
-#startOverlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.8);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    font-size:32px;
-    text-align:center;
-    z-index:99999;
-    cursor:pointer;
-    flex-direction:column;
-    opacity:1;
-    transition:opacity 0.5s ease;
-}
-
 /* icon container aligned in a vertical column on left side */
 .icon-container{
     position:fixed;
@@ -161,9 +140,6 @@ button{
 
 <body>
 
-<!-- AUTOPLAY START OVERLAY -->
-<div id="startOverlay">Click anywhere to start 🎵</div>
-
 <!-- MAIN PAGE BACKGROUND MUSIC -->
 <audio id="bgMusic" loop autoplay muted>
 <source src="main-music.mp3" type="audio/mpeg">
@@ -216,13 +192,11 @@ button{
 <script>
 
 /* START MAIN PAGE MUSIC WITH FADE-IN */
-const bgMusic = document.getElementById("bgMusic");
-const startOverlay = document.getElementById("startOverlay");
-
-function startMusic(){
+window.addEventListener("load", () => {
+    const bgMusic = document.getElementById("bgMusic");
     bgMusic.volume = 0; // start muted
-    bgMusic.play().then(()=>{
-        // fade-in
+    bgMusic.play().then(() => {
+        // fade-in to 0.5 volume
         let vol = 0;
         const fade = setInterval(() => {
             if(vol < 0.5){
@@ -232,18 +206,11 @@ function startMusic(){
                 clearInterval(fade);
             }
         }, 100);
-    }).catch(()=>{});
-    // hide overlay
-    startOverlay.style.opacity = 0;
-    setTimeout(()=>startOverlay.style.display="none",500);
-}
-
-// overlay click triggers music
-startOverlay.addEventListener("click", startMusic);
-
-// try to autoplay immediately if browser allows
-window.addEventListener("load", () => {
-    bgMusic.play().then(()=>startMusic()).catch(()=>{});
+    }).catch(() => {
+        document.body.addEventListener("click", () => {
+            bgMusic.play();
+        }, { once: true });
+    });
 });
 
 /* PAIMON FOLLOW CURSOR */
@@ -255,7 +222,9 @@ document.addEventListener("mousemove", e => {
 
 /* OPEN SCENES */
 function openScene(n){
-    bgMusic.pause();
+    let bg = document.getElementById("bgMusic");
+    bg.pause();
+
     document.querySelectorAll(".scene").forEach(s => s.style.display = "none");
     document.getElementById("scene"+n).style.display = "flex";
 
@@ -277,11 +246,13 @@ function openScene(n){
 /* RETURN TO MAIN PAGE */
 function closeScenes(){
     document.querySelectorAll(".scene").forEach(s => s.style.display = "none");
-    bgMusic.play();
+    let bg = document.getElementById("bgMusic");
+    bg.play();
 }
 
 </script>
 
 </body>
 </html>
+
 
