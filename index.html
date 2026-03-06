@@ -15,29 +15,64 @@ body{
     cursor:none;
 }
 
-/* gift icons with circular frames */
+/* gift icons with circular frames and magical aura */
+.icon-container{
+    position:fixed;
+    left:20px; /* left side of screen */
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column; /* vertical column, change to row if needed */
+    gap:40px; /* space between icons */
+    z-index:10;
+}
+
+.icon-wrapper{
+    position:relative;
+    width:130px;
+    height:130px;
+}
+
 .icon{
     position:absolute;
     width:130px;
-    height:130px;           /* equal width & height for circle */
-    border-radius:50%;       /* circular shape */
-    border:3px solid gold;   /* golden frame */
-    box-shadow: 0 0 15px rgba(255,215,0,0.6); /* subtle glow */
+    height:130px;           
+    border-radius:50%;       
+    border:3px solid gold;   
+    box-shadow: 0 0 15px rgba(255,215,0,0.6); 
+    background: rgba(0,0,0,0.3); /* semi-transparent inner background */
     cursor:pointer;
     transition: transform 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease;
-    overflow:hidden; /* clip image inside circle */
+    overflow:hidden; 
+    z-index:2;
 }
 
 .icon:hover{
     transform:scale(1.35);
     filter:drop-shadow(0 0 25px gold);
     box-shadow: 0 0 25px rgba(255,215,0,0.9);
+    background: rgba(0,0,0,0.5);
 }
 
-/* icon positions */
-#gift1{ bottom:120px; left:25%; }
-#gift2{ top:40%; left:48%; }
-#gift3{ bottom:120px; right:25%; }
+/* magical aura animation behind icons */
+.aura{
+    position:absolute;
+    width:160px;
+    height:160px;
+    top:-15px;
+    left:-15px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,0,0.4), rgba(255,215,0,0));
+    filter:blur(12px);
+    animation: pulse 2s infinite alternate;
+    z-index:1;
+}
+
+@keyframes pulse{
+    0%{transform: scale(1);}
+    50%{transform: scale(1.2);}
+    100%{transform: scale(1);}
+}
 
 /* paimon cursor */
 #paimonCursor{
@@ -105,17 +140,28 @@ button{
 <body>
 
 <!-- MAIN PAGE BACKGROUND MUSIC -->
-<audio id="bgMusic" loop>
+<audio id="bgMusic" loop autoplay muted>
 <source src="main-music.mp3" type="audio/mpeg">
 </audio>
 
 <!-- PAIMON CURSOR -->
 <img id="paimonCursor" src="paimon.png">
 
-<!-- MAIN PAGE GIFTS -->
-<img src="gift1.webp" class="icon" id="gift1" onclick="openScene(1)">
-<img src="gift2.webp" class="icon" id="gift2" onclick="openScene(2)">
-<img src="gift3.webp" class="icon" id="gift3" onclick="openScene(3)">
+<!-- ICONS WITH AURA -->
+<div class="icon-container">
+    <div class="icon-wrapper">
+        <div class="aura"></div>
+        <img src="gift1.webp" class="icon" onclick="openScene(1)">
+    </div>
+    <div class="icon-wrapper">
+        <div class="aura"></div>
+        <img src="gift2.webp" class="icon" onclick="openScene(2)">
+    </div>
+    <div class="icon-wrapper">
+        <div class="aura"></div>
+        <img src="gift3.webp" class="icon" onclick="openScene(3)">
+    </div>
+</div>
 
 <!-- SCENE 1 -->
 <div class="scene" id="scene1">
@@ -144,12 +190,22 @@ button{
 
 <script>
 
-/* START MAIN PAGE MUSIC ON LOAD OR FIRST CLICK */
+/* START MAIN PAGE MUSIC WITH FADE-IN */
 window.addEventListener("load", () => {
     const bgMusic = document.getElementById("bgMusic");
-    bgMusic.volume = 0.5;
-    bgMusic.play().catch(() => {
-        // autoplay blocked, play on first click
+    bgMusic.volume = 0; // start muted
+    bgMusic.play().then(() => {
+        // fade-in to 0.5 volume
+        let vol = 0;
+        const fade = setInterval(() => {
+            if(vol < 0.5){
+                vol += 0.02;
+                bgMusic.volume = vol;
+            } else {
+                clearInterval(fade);
+            }
+        }, 100);
+    }).catch(() => {
         document.body.addEventListener("click", () => {
             bgMusic.play();
         }, { once: true });
